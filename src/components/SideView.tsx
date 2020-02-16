@@ -4,8 +4,8 @@ import FlightPanel from './FlightPanel'
 
 const SideView = () => {
   return <div className="side-bar">
+    <SettingsButtons />
     <LogView title={'Logs'} />
-    <LogView title={'Warnings'} />
     <ActionButtons />
     <FlightPanels />
   </div>;
@@ -24,6 +24,23 @@ const FlightPanels = () => {
   </table>
 }
 
+const SettingsButtons = () => {
+  return <Button.Group className="full">
+    <Button icon className="no-borderrad">
+      <Icon name='cogs' />
+    </Button>
+    <Button icon>
+      <Icon name='camera retro' />
+    </Button>
+    <Button icon>
+      <Icon name='chart bar' />
+    </Button>
+    <Button icon className="no-borderrad">
+      <Icon name='fighter jet' />
+    </Button>
+  </Button.Group>;
+};
+
 const ActionButtons = () => {
   return <Button.Group style={{ width: '100%', padding: '10px' }}>
     <Button><Icon name='location arrow' /> Path Find</Button>
@@ -37,7 +54,7 @@ const LogView = ({ title }: any) => {
   return (
     <div>
       <Segment.Group>
-        <Segment>
+        <Segment className="no-borderrad">
           <Button
             compact
             size='small'
@@ -45,10 +62,14 @@ const LogView = ({ title }: any) => {
             onClick={() => setLog(['[123:548Z] No.'].concat(log))}>
             Clear
           </Button>
-          {title} <Label circular>{log.length}</Label>
+          {title} &nbsp;
+          <Label circular>{log.length}</Label>
+          <Label color="yellow" circular>{0}</Label>
+          <Label color="red" circular>{0}</Label>
         </Segment>
-        <Segment secondary style={{ height: '150px', overflowY: 'scroll', paddingBottom: '0' }}>
-          <pre>
+        <Segment secondary 
+          style={{ borderRadius: '0px;', height: '350px', overflowY: 'scroll', paddingBottom: '0' }}>
+          <pre style={{marginTop: '0px'}}>
             {log.map((e, i) => (
               <div key={i}>{e}</div>
             ))}
