@@ -1,33 +1,38 @@
 import React, { useState } from 'react';
 import { Button, Grid, Header, Label, Segment, Portal, Icon } from 'semantic-ui-react'
-
-declare const FlightIndicator: any;
-FlightIndicator.setOptions({
-  assets: "/pfd/"
-});
-
-setTimeout(() => {
-  var horizon = new FlightIndicator.Horizon({
-    containerId: "horizon-container",
-    onIndicatorReady: () => {
-    }
-  });
-}, 1000);
+import FlightPanel from './FlightPanel'
 
 const SideView = () => {
-  return <div className="sidebar">
-    <LogView />
-    <LogView />
-    <Button.Group style={{ width: '100%' }}>
-      <Button><Icon name='location arrow' /> Path Find</Button>
-      <Button.Or />
-      <Button positive><Icon name='sync' /> Refresh</Button>
-    </Button.Group>
-    <div><div id="horizon-container"></div></div>
+  return <div className="side-bar">
+    <LogView title={'Logs'} />
+    <LogView title={'Warnings'} />
+    <ActionButtons />
+    <FlightPanels />
   </div>;
 };
 
-const LogView = () => {
+const FlightPanels = () => {
+  return <table>
+    <tr>
+      <td><FlightPanel panel="horizon" /></td>
+      <td><FlightPanel panel="speed" /></td>
+    </tr>
+    <tr>
+      <td><FlightPanel panel="altitude" /></td>
+      <td><FlightPanel panel="heading" /></td>
+    </tr>
+  </table>
+}
+
+const ActionButtons = () => {
+  return <Button.Group style={{ width: '100%', padding: '10px' }}>
+    <Button><Icon name='location arrow' /> Path Find</Button>
+    <Button.Or />
+    <Button positive><Icon name='sync' /> Refresh</Button>
+  </Button.Group>;
+};
+
+const LogView = ({ title }: any) => {
   let [log, setLog] = useState<string[]>([]);
   return (
     <div>
@@ -37,12 +42,12 @@ const LogView = () => {
             compact
             size='small'
             floated='right'
-            onClick={() => setLog(log.concat(['[123:548Z] No.']))}>
+            onClick={() => setLog(['[123:548Z] No.'].concat(log))}>
             Clear
-              </Button>
-              Event Log <Label circular>{log.length}</Label>
+          </Button>
+          {title} <Label circular>{log.length}</Label>
         </Segment>
-        <Segment secondary style={{ maxHeight: '150px', overflowY: 'scroll', paddingBottom: '0' }}>
+        <Segment secondary style={{ height: '150px', overflowY: 'scroll', paddingBottom: '0' }}>
           <pre>
             {log.map((e, i) => (
               <div key={i}>{e}</div>

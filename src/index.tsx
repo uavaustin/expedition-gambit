@@ -1,8 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import mapboxgl from 'mapbox-gl';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+
+declare const FlightIndicator: any;
+FlightIndicator.setOptions({
+  assets: "/pfd/"
+});
+
+mapboxgl.accessToken = 'pk.eyJ1Ijoic3NoaDEyIiwiYSI6ImNpcTVhNDQxYjAwM3FmaGtrYnl6czEwMGcifQ.eYETiDD8NqThLahLIBmjSQ';
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

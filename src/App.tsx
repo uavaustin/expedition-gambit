@@ -1,15 +1,16 @@
 import React from 'react';
-import SideView from './components/SideView';
 import './App.css';
+
+import SideView from './components/SideView';
 import Map from './components/Map';
 
 const App = () => {
   return (
     <div className="App">
       <SideView />
-      <Map></Map>
+      <Map />
     </div>
   );
-}
+};
 
 export default App;
