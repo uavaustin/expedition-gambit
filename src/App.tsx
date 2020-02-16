@@ -1,12 +1,13 @@
 import React from 'react';
 import SideView from './components/SideView';
 import './App.css';
+import Map from './components/Map';
 
 const App = () => {
   return (
     <div className="App">
       <SideView />
-      <div className="map" style={{backgroundColor: '#aaaaaa', width: '100%', height: window.innerHeight + 'px'}}></div>
+      <Map></Map>
     </div>
   );
 }
