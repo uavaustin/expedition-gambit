@@ -25,11 +25,11 @@ class App extends React.Component {
   componentDidMount() {
     poll(async () => {
       let telemetry = await Telemetry.overview();
-      this.setState({telemetry: telemetry});
+      this.setState({ telemetry: telemetry });
     });
   }
 
-  render () {
+  render() {
     return (
       <div className="App">
         <ServicesContext.Provider value={this.state}>

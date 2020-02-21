@@ -9,6 +9,9 @@ PANEL_TO_FUNC['altitude'] = FlightIndicator.Altitude;
 PANEL_TO_FUNC['heading'] = FlightIndicator.Heading;
 
 class FlightPanel extends React.Component<any, any> {
+
+  instument: any;
+
   constructor(props: any) {
     super(props);
     this.state = {
@@ -16,10 +19,23 @@ class FlightPanel extends React.Component<any, any> {
     };
   }
 
+  componentDidUpdate(prevProps: any) {
+    let { panel } = this.props;
+    if (panel == 'heading') {
+      this.instument.update(this.props.heading);
+    } else if (panel == 'altitude') {
+      this.instument.update(this.props.altitude);
+    } else if (panel == 'speed') {
+      this.instument.update(this.props.speed);
+    } else if (panel == 'horizon') {
+      this.instument.update(this.props.pitch, this.props.roll);
+    }
+  }
+
   componentDidMount() {
     let { panel } = this.props;
     let { id } = this.state;
-    let pan = new (PANEL_TO_FUNC[panel])({
+    this.instument = new (PANEL_TO_FUNC[panel])({
       containerId: panel + "-container-" + id,
       onIndicatorReady: () => { }
     });

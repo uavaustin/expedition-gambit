@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Button, Grid, Header, Label, Segment, Portal, Icon } from 'semantic-ui-react'
+import { Button, Label, Segment, Icon } from 'semantic-ui-react'
 import FlightPanel from './FlightPanel'
+import { ServicesContext } from '../services';
 
 const SideView = () => {
   return <div className="side-bar">
@@ -12,17 +13,23 @@ const SideView = () => {
 };
 
 const FlightPanels = () => {
-  return <table>
-    <tr>
-      <td><FlightPanel panel="horizon" /></td>
-      <td><FlightPanel panel="speed" /></td>
-    </tr>
-    <tr>
-      <td><FlightPanel panel="altitude" /></td>
-      <td><FlightPanel panel="heading" /></td>
-    </tr>
-  </table>
-}
+  return (
+    <ServicesContext.Consumer>
+      {({ telemetry }: any) =>
+        (<table>
+          <tr>
+            <td><FlightPanel pitch={telemetry?.rot.pitch}
+              roll={telemetry?.rot.roll}
+              panel="horizon" /></td>
+            <td><FlightPanel speed={telemetry?.speed.airspeed} panel="speed" /></td>
+          </tr>
+          <tr>
+            <td><FlightPanel altitude={telemetry?.alt.msl} panel="altitude" /></td>
+            <td><FlightPanel heading={telemetry?.rot.yaw} panel="heading" /></td>
+          </tr>
+        </table>)}
+    </ServicesContext.Consumer>);
+};
 
 const SettingsButtons = () => {
   return <Button.Group className="full">
@@ -67,9 +74,9 @@ const LogView = ({ title }: any) => {
           <Label color="yellow" circular>{0}</Label>
           <Label color="red" circular>{0}</Label>
         </Segment>
-        <Segment secondary 
+        <Segment secondary
           style={{ borderRadius: '0px;', height: '350px', overflowY: 'scroll', paddingBottom: '0' }}>
-          <pre style={{marginTop: '0px'}}>
+          <pre style={{ marginTop: '0px' }}>
             {log.map((e, i) => (
               <div key={i}>{e}</div>
             ))}

@@ -56,12 +56,12 @@ class Map extends React.Component<any, any> {
     return (
       <div className="map-wrapper">
         <ServicesContext.Consumer>
-          {({telemetry}: any) => {
-            if(telemetry) {
+          {({ telemetry }: any) => {
+            if (telemetry) {
               // @ts-ignore
               this.planeMarker?.setLngLat([telemetry.pos.lon, telemetry.pos.lat]).setRotation(telemetry.rot.yaw);
             }
-            return <h2>{JSON.stringify({telemetry})}}</h2>
+            return <h2>{JSON.stringify({ telemetry })}}</h2>
           }}
         </ServicesContext.Consumer>
         <div id="#map" ref={elem => this.mapContainer = elem}
