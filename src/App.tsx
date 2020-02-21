@@ -13,12 +13,13 @@ let poll = (func: Function) => {
   }, 1000);
 };
 
-class App extends React.Component {
+class App extends React.Component<any, any> {
 
   constructor(props: any) {
     super(props);
     this.state = {
-      telemetry: null
+      telemetry: null,
+      logs: []
     };
   }
 
@@ -30,9 +31,16 @@ class App extends React.Component {
   }
 
   render() {
+    let addLog = (lvl: string, msg: string) => 
+      this.setState((state: any) => {return {...state, logs: [{msg: msg, lvl: lvl}].concat(state.logs)}});
+    let serviceState = {
+      telemetry: this.state.telemetry,
+      logs: this.state.logs,
+      addLog: addLog
+    };
     return (
       <div className="App">
-        <ServicesContext.Provider value={this.state}>
+        <ServicesContext.Provider value={serviceState}>
           <SideView />
           <Map />
         </ServicesContext.Provider>
