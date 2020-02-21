@@ -43,9 +43,9 @@ const SettingsButtons = () => {
 
 const ActionButtons = () => {
   return <Button.Group style={{ width: '100%', padding: '10px' }}>
-    <Button><Icon name='location arrow' /> Path Find</Button>
+    <Button><Icon name='location arrow' />Path Find</Button>
     <Button.Or />
-    <Button positive><Icon name='sync' /> Refresh</Button>
+    <Button positive><Icon name='sync' />Refresh&nbsp;&nbsp;&nbsp;&nbsp;</Button>
   </Button.Group>;
 };
 
