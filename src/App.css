@@ -31,3 +31,7 @@
 .full {
   width: 100%;
 }
+
+.battery-slider {
+  margin: 9px !important;
+}

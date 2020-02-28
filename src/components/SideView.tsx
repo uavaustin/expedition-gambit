@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Label, Segment, Icon } from 'semantic-ui-react'
+import { Button, Label, Segment, Icon, Progress } from 'semantic-ui-react'
 import FlightPanel from './FlightPanel'
 import { ServicesContext } from '../services';
 
@@ -8,8 +8,18 @@ const SideView = () => {
     <SettingsButtons />
     <LogView title={'Logs'} />
     <ActionButtons />
+    <MiscIndicators />
     <FlightPanels />
   </div>;
+};
+
+const MiscIndicators = () => {
+  return (<ServicesContext.Consumer>
+    {({ telemetry }: any) =>
+      (<div>
+        <Progress className='battery-slider' percent={telemetry?.battery.percentage} autoSuccess progress />
+      </div>)}
+  </ServicesContext.Consumer>);
 };
 
 const FlightPanels = () => {
@@ -75,7 +85,7 @@ const LogView = ({ title }: any) => {
           <Label color="red" circular>{0}</Label>
         </Segment>
         <Segment secondary
-          style={{ borderRadius: '0px;', height: '350px', overflowY: 'scroll', paddingBottom: '0' }}>
+          style={{ borderRadius: '0px;', height: '300px', overflowY: 'scroll', paddingBottom: '0' }}>
           <pre style={{ marginTop: '0px' }}>
             {log.map((e, i) => (
               <div key={i}>{e}</div>

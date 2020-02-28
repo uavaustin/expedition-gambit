@@ -38,4 +38,9 @@ export let InteropProxy = {
     'odlcs', OdlcList) as Promise<OdlcList.AsObject>,
 };
 
-export const ServicesContext = React.createContext({});
+type ServerState = {
+  telemetry: Overview.AsObject,
+  mission: InteropMission.AsObject
+};
+
+export const ServicesContext = React.createContext({} as ServerState);

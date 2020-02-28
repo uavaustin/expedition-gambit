@@ -4,13 +4,13 @@ import './App.css';
 import SideView from './components/SideView';
 import Map from './components/Map';
 
-import { Telemetry, ServicesContext } from './services';
+import { Telemetry, InteropProxy, ServicesContext } from './services';
 
 let poll = (func: Function) => {
   func();
   setInterval(() => {
     func();
-  }, 1000);
+  }, 10000);
 };
 
 class App extends React.Component<any, any> {
@@ -26,17 +26,16 @@ class App extends React.Component<any, any> {
   componentDidMount() {
     poll(async () => {
       let telemetry = await Telemetry.overview();
-      this.setState({ telemetry: telemetry });
+      let mission = await InteropProxy.mission();
+      this.setState({ telemetry, mission });
     });
   }
 
   render() {
-    let addLog = (lvl: string, msg: string) => 
-      this.setState((state: any) => {return {...state, logs: [{msg: msg, lvl: lvl}].concat(state.logs)}});
     let serviceState = {
       telemetry: this.state.telemetry,
-      logs: this.state.logs,
-      addLog: addLog
+      mission: this.state.mission,
+      logs: this.state.logs
     };
     return (
       <div className="App">

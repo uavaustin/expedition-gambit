@@ -15,18 +15,42 @@ let createMarker = (img: any, w: number, h: number) => {
 class Map extends React.Component<any, any> {
 
   mapContainer: any;
+  dropMarker: mapboxgl.Marker;
   planeMarker: mapboxgl.Marker;
+  updateFlyzonePoly: Function;
+  updateWaypointLine: Function;
+  map: mapboxgl.Map | null = null;
 
   constructor(props: any) {
     super(props);
     this.state = {
-      lng: -95.3143,
-      lat: 29.9848,
-      zoom: 2,
+      lng: -76.434088,
+      lat: 38.142544,
+      zoom: 13,
       width: window.innerWidth,
       height: window.innerHeight
     };
     this.planeMarker = createMarker('plane.png', 50, 50).setLngLat([0, 0]);
+    this.dropMarker = createMarker('drop.png', 50, 50).setLngLat([0, 0]);
+    this.updateFlyzonePoly = (coords: any[] = []) => {
+      return {
+        'type': 'Feature',
+        'geometry': {
+          'type': 'Polygon',
+          'coordinates': coords
+        }
+      };
+    };
+    this.updateWaypointLine = (coords: any[] = []) => {
+      return {
+        'type': 'Feature',
+        'properties': {},
+        'geometry': {
+          'type': 'LineString',
+          'coordinates': coords
+        }
+      };
+    };
   }
 
   componentDidMount() {
@@ -36,6 +60,7 @@ class Map extends React.Component<any, any> {
       center: [this.state.lng, this.state.lat],
       zoom: this.state.zoom
     });
+    this.map = map;
     map.on('move', () => {
       this.setState({
         lng: map.getCenter().lng.toFixed(4),
@@ -45,6 +70,31 @@ class Map extends React.Component<any, any> {
     });
     map.on('load', () => {
       this.planeMarker.addTo(map);
+      this.dropMarker.addTo(map);
+      map.addSource('flyzone', {
+        'type': 'geojson',
+        'data': this.updateFlyzonePoly([[]])
+      });
+      map.addLayer({
+        'id': 'flyzone',
+        'type': 'fill',
+        'source': 'flyzone',
+        'layout': {},
+        'paint': {
+          'fill-color': '#088',
+          'fill-opacity': 0.8
+        }
+      });
+      map.addSource('waypoints', {
+        'type': 'geojson',
+        'data': this.updateWaypointLine([])
+      });
+      map.addLayer({
+        'id': 'waypoints',
+        'type': 'fill',
+        'source': 'waypoints',
+        'layout': {}
+      });
     });
     window.addEventListener('resize', () => {
       this.setState({ width: window.innerWidth, height: window.innerHeight });
@@ -56,12 +106,26 @@ class Map extends React.Component<any, any> {
     return (
       <div className="map-wrapper">
         <ServicesContext.Consumer>
-          {({ telemetry }: any) => {
+          {({ telemetry, mission }) => {
             if (telemetry) {
               // @ts-ignore
               this.planeMarker?.setLngLat([telemetry.pos.lon, telemetry.pos.lat]).setRotation(telemetry.rot.yaw);
             }
-            return <h2>{JSON.stringify({ telemetry })}}</h2>
+            if (mission) {
+              console.log(mission);
+              let flyzoneBoxes = [];
+              let waypoints = mission.waypointsList.map(c => [c.lon, c.lat]);
+              for (let flyzone of mission.flyZonesList) {
+                let bounds = flyzone.boundaryList.map(c => [c.lon, c.lat]);
+                flyzoneBoxes.push(bounds);
+              }
+              this.dropMarker?.setLngLat([mission.airDropPos?.lon || 0, mission.airDropPos?.lat || 0]);
+              // @ts-ignore
+              this.map?.getSource('flyzone')?.setData(this.updateFlyzonePoly(flyzoneBoxes));
+              // @ts-ignore
+              this.map?.getSource('waypoints')?.setData(this.updateWaypointLine(waypoints));
+            }
+            return <div></div>;
           }}
         </ServicesContext.Consumer>
         <div id="#map" ref={elem => this.mapContainer = elem}
