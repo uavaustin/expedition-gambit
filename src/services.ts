@@ -40,7 +40,8 @@ export let InteropProxy = {
 
 type ServerState = {
   telemetry: Overview.AsObject,
-  mission: InteropMission.AsObject
+  mission: InteropMission.AsObject,
+  odlcs: OdlcList.AsObject
 };
 
 export const ServicesContext = React.createContext({} as ServerState);

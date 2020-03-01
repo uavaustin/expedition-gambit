@@ -27,7 +27,8 @@ class App extends React.Component<any, any> {
     poll(async () => {
       let telemetry = await Telemetry.overview();
       let mission = await InteropProxy.mission();
-      this.setState({ telemetry, mission });
+      let odlcs = await InteropProxy.odlcs();
+      this.setState({ telemetry, mission, odlcs });
     });
   }
 
@@ -35,6 +36,7 @@ class App extends React.Component<any, any> {
     let serviceState = {
       telemetry: this.state.telemetry,
       mission: this.state.mission,
+      odlcs: this.state.odlcs,
       logs: this.state.logs
     };
     return (
