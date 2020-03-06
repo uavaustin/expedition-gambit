@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import 'codemirror/lib/codemirror.css';
 
 import SideView from './components/SideView';
 import Map from './components/Map';

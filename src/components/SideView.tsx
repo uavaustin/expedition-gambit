@@ -3,13 +3,22 @@ import { Button, Label, Segment, Icon, Progress } from 'semantic-ui-react'
 import FlightPanel from './FlightPanel'
 import { ServicesContext } from '../services';
 
+import SettingsModal from './SettingsModal';
+
 const SideView = () => {
+  let [viewConfig, setViewConfig] = useState(false);
+  let optionClicked = (optName: string) => {
+    if(optName == 'settings') {
+      setViewConfig(true);
+    }
+  };
   return <div className="side-bar">
-    <SettingsButtons />
+    <OptionsButtons onClick={(opt: string) => optionClicked(opt)} />
     <LogView title={'Logs'} />
     <ActionButtons />
     <MiscIndicators />
     <FlightPanels />
+    <SettingsModal visable={viewConfig} setVisable={(v: boolean) => setViewConfig(v)} />
   </div>;
 };
 
@@ -41,9 +50,9 @@ const FlightPanels = () => {
     </ServicesContext.Consumer>);
 };
 
-const SettingsButtons = () => {
+const OptionsButtons = ({ onClick }: any) => {
   return <Button.Group className="full">
-    <Button icon className="no-borderrad">
+    <Button icon className="no-borderrad" onClick={() => onClick('settings')}>
       <Icon name='cogs' />
     </Button>
     <Button icon>

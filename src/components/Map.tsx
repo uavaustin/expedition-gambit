@@ -1,6 +1,7 @@
 import React from 'react';
 import mapboxgl from 'mapbox-gl';
 import { ServicesContext } from '../services';
+import CONFIG from '../config';
 
 let createMarker = (img: any, w: number, h: number) => {
   let el = document.createElement('div');
@@ -25,9 +26,9 @@ class Map extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
-      lng: -76.434088,
-      lat: 38.142544,
-      zoom: 13,
+      lng: CONFIG.map.lng,
+      lat: CONFIG.map.lat,
+      zoom: CONFIG.map.zoom,
       width: window.innerWidth,
       height: window.innerHeight
     };
