@@ -8,7 +8,7 @@ import SettingsModal from './SettingsModal';
 const SideView = () => {
   let [viewConfig, setViewConfig] = useState(false);
   let optionClicked = (optName: string) => {
-    if(optName == 'settings') {
+    if (optName == 'settings') {
       setViewConfig(true);
     }
   };
@@ -77,32 +77,35 @@ const ActionButtons = () => {
 
 const LogView = ({ title }: any) => {
   let [log, setLog] = useState<string[]>([]);
-  return (
-    <div>
-      <Segment.Group>
-        <Segment className="no-borderrad">
-          <Button
-            compact
-            size='small'
-            floated='right'
-            onClick={() => setLog(['[123:548Z] No.'].concat(log))}>
-            Clear
+  let cntLogType = (logs: any[], type: string) => logs.reduce((acc: number, log: any) => acc + (log.level == type ? 1 : 0), 0);
+  return (<ServicesContext.Consumer>
+    {({ logs }: any) =>
+      (<div>
+        <Segment.Group>
+          <Segment className="no-borderrad">
+            <Button
+              compact
+              size='small'
+              floated='right'
+              onClick={() => setLog(['[123:548Z] No.'].concat(log))}>
+              Clear
           </Button>
-          {title} &nbsp;
-          <Label circular>{log.length}</Label>
-          <Label color="yellow" circular>{0}</Label>
-          <Label color="red" circular>{0}</Label>
-        </Segment>
-        <Segment secondary
-          style={{ borderRadius: '0px;', height: '300px', overflowY: 'scroll', paddingBottom: '0' }}>
-          <pre style={{ marginTop: '0px' }}>
-            {log.map((e, i) => (
-              <div key={i}>{e}</div>
-            ))}
-          </pre>
-        </Segment>
-      </Segment.Group>
-    </div>
+            {title} &nbsp;
+            <Label circular>{cntLogType(logs, 'info')}</Label>
+            <Label color="yellow" circular>{cntLogType(logs, 'warn')}</Label>
+            <Label color="red" circular>{cntLogType(logs, 'error')}</Label>
+          </Segment>
+          <Segment secondary
+            style={{ borderRadius: '0px;', height: '300px', overflowY: 'scroll', paddingBottom: '0' }}>
+            <pre style={{ marginTop: '0px' }}>
+              {logs.map((e: any, i: number) => (
+                <div key={i}>[{e.level.toUpperCase()}] {e.text}</div>
+              ))}
+            </pre>
+          </Segment>
+        </Segment.Group>
+      </div>)}
+  </ServicesContext.Consumer>
   );
 };
 

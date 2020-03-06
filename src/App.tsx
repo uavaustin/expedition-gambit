@@ -4,14 +4,15 @@ import 'codemirror/lib/codemirror.css';
 
 import SideView from './components/SideView';
 import Map from './components/Map';
+import CONFIG from './config';
 
 import { Telemetry, InteropProxy, ServicesContext } from './services';
 
-let poll = (func: Function) => {
+let poll = (func: Function, rate: number) => {
   func();
   setInterval(() => {
     func();
-  }, 10000);
+  }, rate);
 };
 
 class App extends React.Component<any, any> {
@@ -24,13 +25,25 @@ class App extends React.Component<any, any> {
     };
   }
 
+  log(level: 'warn' | 'error' | 'info ', text: string) {
+    console.log(text);
+    this.setState((state: any) => {
+      state.logs = state.logs.concat([{level: level, text: text}]);
+      return state;
+    });
+  }
+
   componentDidMount() {
     poll(async () => {
-      let telemetry = await Telemetry.overview();
-      let mission = await InteropProxy.mission();
-      let odlcs = await InteropProxy.odlcs();
-      this.setState({ telemetry, mission, odlcs });
-    });
+      try {
+        let telemetry = await Telemetry.overview();
+        let mission = await InteropProxy.mission();
+        let odlcs = await InteropProxy.odlcs();
+        this.setState({ telemetry, mission, odlcs });
+      } catch (err) {
+        this.log('error', 'Failed to fetch telemetry.');
+      }
+    }, CONFIG.services.telemetry.rate);
   }
 
   render() {

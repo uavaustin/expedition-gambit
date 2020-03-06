@@ -6,7 +6,8 @@ const CONFIG = (localStorage.getItem(LS_KEY) != null) ?
 const DEFAULT_CONFIG = {
     services: {
         telemetry: {
-            url: 'http://67.205.146.248:5000'
+            url: 'http://67.205.146.248:5000',
+            rate: 10000
         },
         pong: {
             url: 'http://67.205.146.248:7000'
