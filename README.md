@@ -1,11 +1,17 @@
+
 # Expedition Gambit
 
-> Noice.
+> A telemetry dashboard for UAVA.
 
-https://github.com/uavaustin/orchestra/tree/master/services/imagery
+### Usage
+* `yarn install`
+* `yarn build:proto`
+* `yarn start`
+* Edit the default config by clicking the ⚙️ icon
 
-https://github.com/uavaustin/orchestra/tree/master/services/interop-proxy
+```TODO Screenshot```
 
-https://github.com/uavaustin/orchestra/tree/master/services/pong
-
-https://github.com/uavaustin/orchestra/tree/master/services/telemetry
+### Dev Usage
+* `yarn install`
+* `yarn build:proto`
+* `yarn dev`
