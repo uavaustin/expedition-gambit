@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Label, Segment, Icon, Progress } from 'semantic-ui-react'
 import FlightPanel from './FlightPanel'
-import { ServicesContext } from '../services';
+import { ServicesContext } from '../flight/services';
 
 import SettingsModal from './SettingsModal';
 
@@ -75,21 +75,20 @@ const ActionButtons = () => {
   </Button.Group>;
 };
 
+const LOG_TYPE_TO_COLOR: any = {
+  warn: '#fbbd08',
+  error: '#db2828',
+  info: '#64615f'
+};
+
 const LogView = ({ title }: any) => {
   let [log, setLog] = useState<string[]>([]);
-  let cntLogType = (logs: any[], type: string) => logs.reduce((acc: number, log: any) => acc + (log.level == type ? 1 : 0), 0);
+  let cntLogType = (logs: any[], type: string) => logs.reduce((acc: number, log: any) => acc + (log.level == type ? log.cnt : 0), 0);
   return (<ServicesContext.Consumer>
     {({ logs }: any) =>
       (<div>
         <Segment.Group>
           <Segment className="no-borderrad">
-            <Button
-              compact
-              size='small'
-              floated='right'
-              onClick={() => setLog(['[123:548Z] No.'].concat(log))}>
-              Clear
-          </Button>
             {title} &nbsp;
             <Label circular>{cntLogType(logs, 'info')}</Label>
             <Label color="yellow" circular>{cntLogType(logs, 'warn')}</Label>
@@ -99,7 +98,8 @@ const LogView = ({ title }: any) => {
             style={{ borderRadius: '0px;', height: '300px', overflowY: 'scroll', paddingBottom: '0' }}>
             <pre style={{ marginTop: '0px' }}>
               {logs.map((e: any, i: number) => (
-                <div key={i}>[{e.level.toUpperCase()}] {e.text}</div>
+                <div key={i}><p style={{display: 'inline', color: LOG_TYPE_TO_COLOR[e.level]}}>
+                  [{e.level.toUpperCase()}]</p> {e.text} {e.cnt > 1 && `(x${e.cnt})`}</div>
               ))}
             </pre>
           </Segment>

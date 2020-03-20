@@ -1,8 +1,8 @@
 import React from 'react';
-import { Overview, CameraTelem, MissionCurrent } from './messages/telemetry_pb';
-import { PingTimes } from './messages/stats_pb';
-import { InteropMission, Obstacles, OdlcList } from './messages/interop_pb';
-import CONFIG from './config';
+import { Overview, CameraTelem, MissionCurrent } from '../messages/telemetry_pb';
+import { PingTimes } from '../messages/stats_pb';
+import { InteropMission, Obstacles, OdlcList } from '../messages/interop_pb';
+import CONFIG from '../config';
 
 
 let doGetRequest = async (server: string, path: string, deserializer: any) => {
@@ -36,10 +36,11 @@ export let InteropProxy = {
     'odlcs', OdlcList) as Promise<OdlcList.AsObject>,
 };
 
-type ServerState = {
-  telemetry: Overview.AsObject,
-  mission: InteropMission.AsObject,
-  odlcs: OdlcList.AsObject
+export type ServerState = {
+  telemetry?: Overview.AsObject,
+  mission?: InteropMission.AsObject,
+  odlcs?: OdlcList.AsObject,
+  logs?: any[]
 };
 
 export const ServicesContext = React.createContext({} as ServerState);

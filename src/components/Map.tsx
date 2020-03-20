@@ -1,6 +1,6 @@
 import React from 'react';
 import mapboxgl from 'mapbox-gl';
-import { ServicesContext } from '../services';
+import { ServicesContext } from '../flight/services';
 import CONFIG from '../config';
 
 let createMarker = (img: any, w: number, h: number) => {
@@ -34,6 +34,7 @@ class Map extends React.Component<any, any> {
     };
     this.planeMarker = createMarker('plane.png', 50, 50).setLngLat([0, 0]);
     this.dropMarker = createMarker('drop.png', 50, 50).setLngLat([0, 0]);
+    // TODO clean this up
     this.updateFlyzonePoly = (coords: any[] = []) => {
       return {
         'type': 'Feature',

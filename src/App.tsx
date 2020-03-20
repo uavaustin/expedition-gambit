@@ -6,7 +6,8 @@ import SideView from './components/SideView';
 import Map from './components/Map';
 import CONFIG from './config';
 
-import { Telemetry, InteropProxy, ServicesContext } from './services';
+import { Telemetry, InteropProxy, ServicesContext, ServerState } from './flight/services';
+import Watcher from './flight/watcher';
 
 let poll = (func: Function, rate: number) => {
   func();
@@ -17,8 +18,11 @@ let poll = (func: Function, rate: number) => {
 
 class App extends React.Component<any, any> {
 
+  watcher: Watcher;
+
   constructor(props: any) {
     super(props);
+    this.watcher = new Watcher();
     this.state = {
       telemetry: null,
       logs: []
@@ -26,28 +30,33 @@ class App extends React.Component<any, any> {
   }
 
   log(level: 'warn' | 'error' | 'info ', text: string) {
-    console.log(text);
     this.setState((state: any) => {
-      state.logs = state.logs.concat([{level: level, text: text}]);
+      if(state.logs.length > 0 && state.logs[0].text == text) {
+        state.logs[0].cnt++;
+      } else {
+        state.logs = [{level: level, text: text, cnt: 1}].concat(state.logs);
+      }
       return state;
     });
   }
 
   componentDidMount() {
+    this.watcher.setLogFunc(this.log.bind(this));
     poll(async () => {
       try {
         let telemetry = await Telemetry.overview();
         let mission = await InteropProxy.mission();
         let odlcs = await InteropProxy.odlcs();
         this.setState({ telemetry, mission, odlcs });
+        this.watcher.feedData({ telemetry, mission, odlcs });
       } catch (err) {
-        this.log('error', 'Failed to fetch telemetry.');
+        this.watcher.feedData({});
       }
     }, CONFIG.services.telemetry.rate);
   }
 
   render() {
-    let serviceState = {
+    let serviceState: ServerState = {
       telemetry: this.state.telemetry,
       mission: this.state.mission,
       odlcs: this.state.odlcs,
