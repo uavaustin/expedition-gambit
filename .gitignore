@@ -24,3 +24,4 @@ yarn-error.log*
 
 protobuf/**/*
 !protobuf/.gitkeep
+src/messages

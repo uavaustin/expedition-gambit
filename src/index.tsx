@@ -1,8 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import mapboxgl from 'mapbox-gl';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import CONFIG from './config';
+
+declare const FlightIndicator: any;
+FlightIndicator.setOptions({
+  assets: "/pfd/"
+});
+
+mapboxgl.accessToken = CONFIG.map.token;
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
