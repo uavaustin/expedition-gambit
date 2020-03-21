@@ -2,6 +2,7 @@ import React from 'react';
 import { Overview, CameraTelem, MissionCurrent } from '../messages/telemetry_pb';
 import { PingTimes } from '../messages/stats_pb';
 import { InteropMission, Obstacles, OdlcList } from '../messages/interop_pb';
+import { LogItem } from './watcher';
 import CONFIG from '../config';
 
 
@@ -40,7 +41,7 @@ export type ServerState = {
   telemetry?: Overview.AsObject,
   mission?: InteropMission.AsObject,
   odlcs?: OdlcList.AsObject,
-  logs?: any[]
+  logs?: LogItem[]
 };
 
 export const ServicesContext = React.createContext({} as ServerState);

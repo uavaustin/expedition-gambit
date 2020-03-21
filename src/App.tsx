@@ -7,7 +7,7 @@ import Map from './components/Map';
 import CONFIG from './config';
 
 import { Telemetry, InteropProxy, ServicesContext, ServerState } from './flight/services';
-import Watcher from './flight/watcher';
+import Watcher, {LogLevel} from './flight/watcher';
 
 let poll = (func: Function, rate: number) => {
   func();
@@ -29,7 +29,7 @@ class App extends React.Component<any, any> {
     };
   }
 
-  log(level: 'warn' | 'error' | 'info ', text: string) {
+  log(level: LogLevel, text: string) {
     this.setState((state: any) => {
       if(state.logs.length > 0 && state.logs[0].text == text) {
         state.logs[0].cnt++;

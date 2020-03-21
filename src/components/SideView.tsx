@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Label, Segment, Icon, Progress } from 'semantic-ui-react'
 import FlightPanel from './FlightPanel'
 import { ServicesContext } from '../flight/services';
+import { LogLevel, LogItem } from '../flight/watcher';
 
 import SettingsModal from './SettingsModal';
 
@@ -75,7 +76,7 @@ const ActionButtons = () => {
   </Button.Group>;
 };
 
-const LOG_TYPE_TO_COLOR: any = {
+const LOG_TYPE_TO_COLOR: {[key in LogLevel]: string} = {
   warn: '#fbbd08',
   error: '#db2828',
   info: '#64615f'
@@ -97,8 +98,8 @@ const LogView = ({ title }: any) => {
           <Segment secondary
             style={{ borderRadius: '0px;', height: '300px', overflowY: 'scroll', paddingBottom: '0' }}>
             <pre style={{ marginTop: '0px' }}>
-              {logs.map((e: any, i: number) => (
-                <div key={i}><p style={{display: 'inline', color: LOG_TYPE_TO_COLOR[e.level]}}>
+              {logs.map((e: LogItem, i: number) => (
+                <div key={i}><p style={{ display: 'inline', color: LOG_TYPE_TO_COLOR[e.level] }}>
                   [{e.level.toUpperCase()}]</p> {e.text} {e.cnt > 1 && `(x${e.cnt})`}</div>
               ))}
             </pre>

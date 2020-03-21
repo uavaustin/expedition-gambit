@@ -1,5 +1,8 @@
 import { ServerState } from '../flight/services';
 
+export type LogLevel = 'info' | 'warn' | 'error';
+export type LogItem = {level: LogLevel, cnt: number, text: string}
+
 class Watcher {
 
   log: Function = console.log;

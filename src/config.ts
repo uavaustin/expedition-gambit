@@ -19,7 +19,8 @@ const DEFAULT_CONFIG = {
   map: {
     lng: -76.434088,
     lat: 38.142544,
-    zoom: 13
+    zoom: 13,
+    token: 'pk.eyJ1Ijoic3NoaDEyIiwiYSI6ImNpcTVhNDQxYjAwM3FmaGtrYnl6czEwMGcifQ.eYETiDD8NqThLahLIBmjSQ'
   }
 };
 
