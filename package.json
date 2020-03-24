@@ -21,6 +21,7 @@
   },
   "scripts": {
     "dev": "react-scripts start",
+    "server": "http-server Server",
     "build": "react-scripts build",
     "build:proto": "./compile.sh"
   },
