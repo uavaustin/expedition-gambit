@@ -1,6 +1,7 @@
 import React from 'react';
 import mapboxgl from 'mapbox-gl';
-import { ServicesContext } from '../services';
+import { ServicesContext } from '../flight/services';
+import CONFIG from '../config';
 
 let createMarker = (img: any, w: number, h: number) => {
   let el = document.createElement('div');
@@ -19,19 +20,21 @@ class Map extends React.Component<any, any> {
   planeMarker: mapboxgl.Marker;
   updateFlyzonePoly: Function;
   updateWaypointLine: Function;
+  updateOdlcMarkers: Function;
   map: mapboxgl.Map | null = null;
 
   constructor(props: any) {
     super(props);
     this.state = {
-      lng: -76.4223,
-      lat: 38.1467,
-      zoom: 15,
+      lng: CONFIG.map.lng,
+      lat: CONFIG.map.lat,
+      zoom: CONFIG.map.zoom,
       width: window.innerWidth,
       height: window.innerHeight
     };
     this.planeMarker = createMarker('plane.png', 50, 50).setLngLat([0, 0]);
     this.dropMarker = createMarker('drop.png', 50, 50).setLngLat([0, 0]);
+    // TODO clean this up
     this.updateFlyzonePoly = (coords: any[] = []) => {
       return {
         'type': 'Feature',
@@ -49,6 +52,24 @@ class Map extends React.Component<any, any> {
           'type': 'LineString',
           'coordinates': coords
         }
+      };
+    };
+    this.updateOdlcMarkers = (markers: any[]) => {
+      return {
+        'type': 'FeatureCollection',
+        'features': markers.map((marker: any) => {
+          return {
+            'type': 'Feature',
+            'geometry': {
+              'type': 'Point',
+              'coordinates': marker.pos
+            },
+            'properties': {
+              'title': marker.description,
+              'icon': 'monument'
+            }
+          }
+        })
       };
     };
   }
@@ -125,6 +146,22 @@ class Map extends React.Component<any, any> {
         'source': 'waypoints',
         'layout': {}
       });
+      map.addSource('odlcs', {
+        'type': 'geojson',
+        'data': this.updateOdlcMarkers([])
+      });
+      map.addLayer({
+        'id': 'odlcs',
+        'type': 'symbol',
+        'source': 'odlcs',
+        'layout': {
+          'icon-image': ['concat', ['get', 'icon'], '-15'],
+          'text-field': ['get', 'title'],
+          'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+          'text-offset': [0, 0.6],
+          'text-anchor': 'top'
+        }
+      });
     });
     window.addEventListener('resize', () => {
       this.setState({ width: window.innerWidth, height: window.innerHeight });
@@ -136,13 +173,12 @@ class Map extends React.Component<any, any> {
     return (
       <div className="map-wrapper">
         <ServicesContext.Consumer>
-          {({ telemetry, mission }) => {
+          {({ telemetry, mission, odlcs }) => {
             if (telemetry) {
               // @ts-ignore
               this.planeMarker?.setLngLat([telemetry.pos.lon, telemetry.pos.lat]).setRotation(telemetry.rot.yaw);
             }
             if (mission) {
-              console.log(mission);
               let flyzoneBoxes = [];
               let waypoints = mission.waypointsList.map(c => [c.lon, c.lat]);
               for (let flyzone of mission.flyZonesList) {
@@ -154,6 +190,15 @@ class Map extends React.Component<any, any> {
               this.map?.getSource('flyzone')?.setData(this.updateFlyzonePoly(flyzoneBoxes));
               // @ts-ignore
               this.map?.getSource('waypoints')?.setData(this.updateWaypointLine(waypoints));
+            }
+            if (odlcs) {
+              let odlcMarkers = odlcs.listList.map((odlc: any) => {
+                return {
+                  pos: [odlc.pos.lon, odlc.pos.lat]
+                }
+              })
+              // @ts-ignore
+              this.map?.getSource('odlcs')?.setData(this.updateOdlcMarkers(odlcMarkers));
             }
             return <div></div>;
           }}

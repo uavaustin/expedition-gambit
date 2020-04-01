@@ -35,3 +35,17 @@
 .battery-slider {
   margin: 9px !important;
 }
+
+.settings-modal {
+  z-index: 10;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+}
+
+.settings-modal .button {
+  margin: 0;
+  border-radius: 0;
+}
