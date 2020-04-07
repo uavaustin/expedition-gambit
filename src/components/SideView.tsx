@@ -1,15 +1,25 @@
 import React, { useState } from 'react';
 import { Button, Label, Segment, Icon, Progress } from 'semantic-ui-react'
 import FlightPanel from './FlightPanel'
-import { ServicesContext } from '../services';
+import { ServicesContext } from '../flight/services';
+import { LogLevel, LogItem } from '../flight/watcher';
+
+import SettingsModal from './SettingsModal';
 
 const SideView = () => {
+  let [viewConfig, setViewConfig] = useState(false);
+  let optionClicked = (optName: string) => {
+    if (optName == 'settings') {
+      setViewConfig(true);
+    }
+  };
   return <div className="side-bar">
-    <SettingsButtons />
+    <OptionsButtons onClick={(opt: string) => optionClicked(opt)} />
     <LogView title={'Logs'} />
     <ActionButtons />
     <MiscIndicators />
     <FlightPanels />
+    <SettingsModal visable={viewConfig} setVisable={(v: boolean) => setViewConfig(v)} />
   </div>;
 };
 
@@ -41,9 +51,9 @@ const FlightPanels = () => {
     </ServicesContext.Consumer>);
 };
 
-const SettingsButtons = () => {
+const OptionsButtons = ({ onClick }: any) => {
   return <Button.Group className="full">
-    <Button icon className="no-borderrad">
+    <Button icon className="no-borderrad" onClick={() => onClick('settings')}>
       <Icon name='cogs' />
     </Button>
     <Button icon>
@@ -66,34 +76,37 @@ const ActionButtons = () => {
   </Button.Group>;
 };
 
+const LOG_TYPE_TO_COLOR: {[key in LogLevel]: string} = {
+  warn: '#fbbd08',
+  error: '#db2828',
+  info: '#64615f'
+};
+
 const LogView = ({ title }: any) => {
   let [log, setLog] = useState<string[]>([]);
-  return (
-    <div>
-      <Segment.Group>
-        <Segment className="no-borderrad">
-          <Button
-            compact
-            size='small'
-            floated='right'
-            onClick={() => setLog(['[123:548Z] No.'].concat(log))}>
-            Clear
-          </Button>
-          {title} &nbsp;
-          <Label circular>{log.length}</Label>
-          <Label color="yellow" circular>{0}</Label>
-          <Label color="red" circular>{0}</Label>
-        </Segment>
-        <Segment secondary
-          style={{ borderRadius: '0px;', height: '300px', overflowY: 'scroll', paddingBottom: '0' }}>
-          <pre style={{ marginTop: '0px' }}>
-            {log.map((e, i) => (
-              <div key={i}>{e}</div>
-            ))}
-          </pre>
-        </Segment>
-      </Segment.Group>
-    </div>
+  let cntLogType = (logs: any[], type: string) => logs.reduce((acc: number, log: any) => acc + (log.level == type ? log.cnt : 0), 0);
+  return (<ServicesContext.Consumer>
+    {({ logs }: any) =>
+      (<div>
+        <Segment.Group>
+          <Segment className="no-borderrad">
+            {title} &nbsp;
+            <Label circular>{cntLogType(logs, 'info')}</Label>
+            <Label color="yellow" circular>{cntLogType(logs, 'warn')}</Label>
+            <Label color="red" circular>{cntLogType(logs, 'error')}</Label>
+          </Segment>
+          <Segment secondary
+            style={{ borderRadius: '0px;', height: '300px', overflowY: 'scroll', paddingBottom: '0' }}>
+            <pre style={{ marginTop: '0px' }}>
+              {logs.map((e: LogItem, i: number) => (
+                <div key={i}><p style={{ display: 'inline', color: LOG_TYPE_TO_COLOR[e.level] }}>
+                  [{e.level.toUpperCase()}]</p> {e.text} {e.cnt > 1 && `(x${e.cnt})`}</div>
+              ))}
+            </pre>
+          </Segment>
+        </Segment.Group>
+      </div>)}
+  </ServicesContext.Consumer>
   );
 };
 

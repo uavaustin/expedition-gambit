@@ -22,13 +22,13 @@ class FlightPanel extends React.Component<any, any> {
   componentDidUpdate(prevProps: any) {
     let { panel } = this.props;
     if (panel == 'heading') {
-      this.instument.update(this.props.heading);
+      this.instument.update(this.props.heading || 0);
     } else if (panel == 'altitude') {
-      this.instument.update(this.props.altitude);
+      this.instument.update(this.props.altitude || 0);
     } else if (panel == 'speed') {
-      this.instument.update(this.props.speed);
+      this.instument.update(this.props.speed || 0);
     } else if (panel == 'horizon') {
-      this.instument.update(this.props.pitch, this.props.roll);
+      this.instument.update(this.props.pitch || 0, this.props.roll || 0);
     }
   }
 
