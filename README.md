@@ -1,17 +1,12 @@
 
 # Expedition Gambit
 
-> A telemetry dashboard for UAVA.
+> A general aircraft and status display for UAV Austin.
 
-### Usage
-* `yarn install`
-* `yarn build:proto`
-* `yarn start`
-* Edit the default config by clicking the ⚙️ icon
+![screenshot](https://user-images.githubusercontent.com/6625384/81488355-4f4f4480-922d-11ea-986c-d58bfa5b13ac.png)
 
-```TODO Screenshot```
-
-### Dev Usage
-* `yarn install`
-* `yarn build:proto`
-* `yarn dev`
+## Usage
+1. `$ yarn install`
+2. `$ yarn build:proto`
+3. `$ yarn start` (or `$ yarn dev`)
+4.  Edit the default config by clicking ⚙️
