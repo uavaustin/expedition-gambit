@@ -75,11 +75,41 @@ class Map extends React.Component<any, any> {
   }
 
   componentDidMount() {
+    var style = {
+      version: 8,
+      sources: {
+        countries: {
+          type: 'raster',
+          // "url": "mapbox://map-id"
+          // "url": "http://tileserver.com/layer.json",
+          tiles: [
+            'http://127.0.0.1:8080/tiles/{z}/{x}/{y}@2x.png'
+          ],
+          maxzoom: 15
+        }
+      },
+      layers: [
+        {
+          id: 'background',
+          type: 'background',
+          paint: {
+            'background-color': '#ddeeff'
+          }
+        },
+        {
+          id: 'area-white',
+          type: 'raster',
+          source: 'countries',
+          'source-layer': 'country',
+        }
+      ]
+    };
     const map = new mapboxgl.Map({
       container: this.mapContainer,
-      style: 'mapbox://styles/mapbox/satellite-v9',
       center: [this.state.lng, this.state.lat],
-      zoom: this.state.zoom
+      zoom: this.state.zoom,
+      // @ts-ignore
+      style: JSON.parse(JSON.stringify(style)) // idk why this works
     });
     this.map = map;
     map.on('move', () => {
